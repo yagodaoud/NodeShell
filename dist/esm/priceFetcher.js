@@ -27,7 +27,10 @@ export async function fetchPriceUrl(ticker, type) {
     }
     let match = text.match(regex);
     if (match) {
-        const currencySymbol = text.includes('BRL') ? 'R$' : '$';
+        let currencySymbol = '$';
+        if (type == 's' && text.includes('BRL')) {
+            currencySymbol = 'R$';
+        }
         const price = `${ticker.toUpperCase()} price: ${currencySymbol}${match[1]}`;
         return price;
     }
