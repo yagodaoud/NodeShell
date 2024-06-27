@@ -1,7 +1,7 @@
 {
   "name": "cli",
   "version": "1.0.0",
-  "main": "dist/index.cjs",
+  "main": "dist/esm/index.js",
   "type": "module",
   "bin": {
     "cli": "./dist/index.cjs"

@@ -3,8 +3,13 @@
 import fetch from 'node-fetch';
 import cheerio from 'cheerio';
 
-async function fetchUrl(url: string): Promise<string> {
-    
+export async function fetchPriceUrl(ticker: string): Promise<string> {
+
+    if (!ticker) {
+        return "A ticker must be provided.";
+    }
+    const url = 'https://www.google.com/search?q=' + ticker + '+usd'
+
     const response = await fetch(url, {
         headers: {
             'User-Agent': 'Mozilla/5.0'
@@ -21,15 +26,14 @@ async function fetchUrl(url: string): Promise<string> {
     
     const text = $('body').text();
 
-    const match = text.match(/(\d{1,3}(?:[.,]\d{3})*(?:[.,]\d+)?)[^\d]*Dólar americano/);
+    const match = text.match(/(\d{1,3}(?:[.,]\d{3})*(?:[.,]\d+)?)[^\d]*USD/);
 
     if (match) {
-        const price = 'BTC Price: $' + match[1];
+        const price = ticker.toUpperCase() + ' price: $' + match[1];
         console.log(price);
         return price;
     }
-    
-    return "";
-}
 
-fetchUrl('https://www.google.com/search?q=btc+usd');
+    console.log('Not found');
+    return "Not found";
+}

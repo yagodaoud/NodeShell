@@ -1,9 +1,11 @@
 #!/usr/bin/env node
 import fetch from 'node-fetch';
 import cheerio from 'cheerio';
-async function fetchPriceUrl(ticker) {
+export async function fetchPriceUrl(ticker) {
+    if (!ticker) {
+        return "A ticker must be provided.";
+    }
     const url = 'https://www.google.com/search?q=' + ticker + '+usd';
-    console.log(url);
     const response = await fetch(url, {
         headers: {
             'User-Agent': 'Mozilla/5.0'
@@ -22,6 +24,5 @@ async function fetchPriceUrl(ticker) {
         return price;
     }
     console.log('Not found');
-    return "";
+    return "Not found";
 }
-fetchPriceUrl('btc');
