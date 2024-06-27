@@ -1,0 +1,8 @@
+fetch:
+Fetch the price of a currency, crypto or stock.
+
+For stocks, use -s {stock_name}
+
+Examples:
+  cli fetch btc
+  cli fetch -s nvda

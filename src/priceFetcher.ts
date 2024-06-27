@@ -3,16 +3,22 @@
 import fetch from 'node-fetch';
 import cheerio from 'cheerio';
 
-export async function fetchPriceUrl(ticker: string): Promise<string> {
+export async function fetchPriceUrl(ticker: string, type: string): Promise<string> {
 
     if (!ticker) {
         return "A ticker must be provided.";
     }
-    const url = 'https://www.google.com/search?q=' + ticker + '+usd'
+
+    if (ticker.toLowerCase() === 'usd') {
+        return "You can't search for usd/usd.";
+    }
+
+    const url = `https://www.google.com/search?q=${ticker}+usd&gl=us&hl=en`
 
     const response = await fetch(url, {
         headers: {
-            'User-Agent': 'Mozilla/5.0'
+            'User-Agent': 'Mozilla/5.0',
+            'Accept-Language': 'en-US,en;q=0.9'
         }
     });
     
@@ -26,14 +32,18 @@ export async function fetchPriceUrl(ticker: string): Promise<string> {
     
     const text = $('body').text();
 
-    const match = text.match(/(\d{1,3}(?:[.,]\d{3})*(?:[.,]\d+)?)[^\d]*USD/);
+    let regex = new RegExp(`(\\d{1,3}(?:[.,]\\d{3})*(?:[.,]\\d+)?)[^\\d]*United States Dollar`)
+
+    if (type == 's') {
+        regex = new RegExp(`(?:Stock Price)(\\d{1,3}(?:[.,]\\d{3})*(?:[.,]\\d+)?)`);
+    }
+
+    let match = text.match(regex);
 
     if (match) {
         const price = ticker.toUpperCase() + ' price: $' + match[1];
-        console.log(price);
         return price;
     }
 
-    console.log('Not found');
     return "Not found";
 }
